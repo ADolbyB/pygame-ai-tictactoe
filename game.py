@@ -22,7 +22,15 @@ class Game:
     
     def draw_figure(self, row, col):
         if self.player == 1:
-            pass # Draw X
+            # Draw X
+            # Descending Line:
+            start_desc = (col * SQSIZE + OFFSET, row * SQSIZE + OFFSET)
+            end_desc = (col * SQSIZE + SQSIZE - OFFSET, row * SQSIZE + SQSIZE - OFFSET)
+            pygame.draw.line(screen, X_COLOR, start_desc, end_desc, X_WIDTH)
+            # Ascending Line:
+            start_asc = (col * SQSIZE + OFFSET, row * SQSIZE + SQSIZE - OFFSET)
+            end_asc = (col * SQSIZE + SQSIZE - OFFSET, row * SQSIZE + OFFSET)
+            pygame.draw.line(screen, X_COLOR, start_asc, end_asc, X_WIDTH)
 
         elif self.player == 2:
             # Draw 'O'
