@@ -8,7 +8,10 @@ screen.fill( BG_COLOR ) # Background Color
 class Game:
     def __init__(self):
         self.board = Board()
+        #self.ai = AI()
         self.player = 1 # Player 1: 'X', Player 2: 'O'
+        self.gameMode = 'pvp' #'pvp' = player vs player, 'ai' = AI player 2
+        self.running = True
         self.show_lines()
 
     def show_lines(self):
