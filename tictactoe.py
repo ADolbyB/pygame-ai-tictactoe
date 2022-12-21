@@ -12,6 +12,7 @@ def main():
     # Game Object
     game = Game()
     board = game.board # refactor for simplification
+    ai = game.ai
     
     while True:
 
@@ -25,12 +26,23 @@ def main():
                 row = pos[1] // SQSIZE
                 col = pos[0] // SQSIZE
 
-                if (board.empty_square(row, col)):
-                    board.mark_square(row, col, game.player)
+                if (board.emptySquare(row, col)):
+                    board.markSquare(row, col, game.player)
                     game.draw_figure(row, col)
                     game.next_turn()
-                    print(board.squares) # DEBUG
+                    # print(board.squares) # DEBUG
 
+        if game.gameMode == 'ai' and game.player == ai.player:
+            # Update the screen
+            pygame.display.update()
+
+            # AI method
+            row, col = ai.eval(board)
+            board.markSquare(row, col, ai.player)
+            game.draw_figure(row, col)
+            game.next_turn()
+            print(board.squares) # DEBUG
+        
         pygame.display.update()
 
 main()

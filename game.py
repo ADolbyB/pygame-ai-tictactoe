@@ -1,6 +1,7 @@
 from constants import *
 import pygame
 from board import Board
+from ai import AI
 
 screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
 screen.fill( BG_COLOR ) # Background Color
@@ -8,9 +9,9 @@ screen.fill( BG_COLOR ) # Background Color
 class Game:
     def __init__(self):
         self.board = Board()
-        #self.ai = AI()
+        self.ai = AI()
         self.player = 1 # Player 1: 'X', Player 2: 'O'
-        self.gameMode = 'pvp' #'pvp' = player vs player, 'ai' = AI player 2
+        self.gameMode = 'ai' #'pvp' = player vs player, 'ai' = AI player 2
         self.running = True
         self.show_lines()
 
