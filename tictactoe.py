@@ -5,7 +5,7 @@ from game import Game
 
 # PyGame Setup:
 pygame.init()
-pygame.display.set_caption("Unbeatable AI Tic Tac Toe") # Caption at top of window
+pygame.display.set_caption("WTF AI Tic Tac Toe") # Caption at top of window
 
 def main():
     

@@ -9,7 +9,7 @@ class Board:
         self.empty_sqrs = self.squares
         self.marked_sqrs = 0
 
-    def final_state(self):
+    def finalState(self):
         # TODO: could make this a switch statement since default case = 0
         # return 0 if game not over & no winner
         # return 1 if player 1 won
