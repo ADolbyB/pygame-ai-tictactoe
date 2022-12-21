@@ -27,10 +27,8 @@ def main():
                 col = pos[0] // SQSIZE
 
                 if (board.emptySquare(row, col)):
-                    board.markSquare(row, col, game.player)
-                    game.draw_figure(row, col)
-                    game.next_turn()
-                    # print(board.squares) # DEBUG
+                    game.make_move(row, col)
+                    # print(board.squares) # DEBUG: print before AI makes decision
 
         if game.gameMode == 'ai' and game.player == ai.player:
             # Update the screen
@@ -38,10 +36,8 @@ def main():
 
             # AI method
             row, col = ai.eval(board)
-            board.markSquare(row, col, ai.player)
-            game.draw_figure(row, col)
-            game.next_turn()
-            print(board.squares) # DEBUG
+            game.make_move(row, col)
+            print(board.squares) # DEBUG: print after AI makes decision
         
         pygame.display.update()
 

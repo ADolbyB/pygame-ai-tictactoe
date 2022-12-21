@@ -15,6 +15,11 @@ class Game:
         self.running = True
         self.show_lines()
 
+    def make_move(self, row, col):
+        self.board.markSquare(row, col, self.player)
+        self.draw_figure(row, col)
+        self.next_turn()
+
     def show_lines(self):
         # Vertical lines
         pygame.draw.line(screen, LINE_COLOR, (SQSIZE, 0), (SQSIZE, HEIGHT), LINE_WIDTH)
