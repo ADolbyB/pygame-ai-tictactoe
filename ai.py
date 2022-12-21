@@ -1,6 +1,5 @@
 import random
 import copy
-from board import Board
 
 class AI:
 

@@ -1,9 +1,85 @@
-from constants import *
 import pygame
-from board import Board
+import numpy as np
+from constants import *
 from ai import AI
 
 screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
+
+class Board:
+    
+    def __init__(self):
+        self.squares = np.zeros( (ROWS, COLS) )
+        # print(self.squares) # DEBUG: Display 2D Array of 0's in terminal
+        self.empty_sqrs = self.squares
+        self.marked_sqrs = 0
+
+    def finalState(self, show=False):
+        # return 0 if game not over & no winner
+        # return 1 if player 1 won
+        # return 2 if player 2 won
+        # TODO: could make this a switch statement since default case = 0
+        
+        # vertical wins:
+        for col in range(COLS):
+            if self.squares[0][col] == self.squares[1][col] == self.squares[2][col] != 0:
+                if show:
+                    color = CIRC_COLOR if self.squares[0][col] == 2 else X_COLOR
+                    initPos = (col * SQSIZE + SQSIZE // 2, 20)
+                    finPos = (col * SQSIZE + SQSIZE // 2, HEIGHT - 20)
+                    pygame.draw.line(screen, color, initPos, finPos, LINE_WIDTH)
+                return self.squares[0][col] # return which player won
+
+        # horizontal wins:
+        for row in range(ROWS):
+            if self.squares[row][0] == self.squares[row][1] == self.squares[row][2] != 0:
+                if show:
+                    color = CIRC_COLOR if self.squares[row][0] == 2 else X_COLOR
+                    initPos = (20, row * SQSIZE + SQSIZE // 2)
+                    finPos = (WIDTH - 20, row * SQSIZE + SQSIZE // 2)
+                    pygame.draw.line(screen, color, initPos, finPos, LINE_WIDTH)
+                return self.squares[row][0] # return player number of winner
+
+        # descending diagonal win:
+        if self.squares[0][0] == self.squares[1][1] == self.squares[2][2] != 0:
+            if show:
+                    color = CIRC_COLOR if self.squares[row][0] == 2 else X_COLOR
+                    initPos = (20, 20)
+                    finPos = (WIDTH - 20, HEIGHT - 20)
+                    pygame.draw.line(screen, color, initPos, finPos, LINE_WIDTH)
+            return self.squares[1][1] # return player number who won
+
+        # ascending diagonal win:
+        if self.squares[2][0] == self.squares[1][1] == self.squares[0][2] != 0:
+            if show:
+                    color = CIRC_COLOR if self.squares[row][0] == 2 else X_COLOR
+                    initPos = (20, HEIGHT - 20)
+                    finPos = (WIDTH - 20, 20)
+                    pygame.draw.line(screen, color, initPos, finPos, LINE_WIDTH)
+            return self.squares[1][1] # return player number who won
+
+        # when there is no winner yet AND game not finished: return 0
+        return 0
+
+    def markSquare(self, row, col, player):
+        self.squares[row][col] = player
+        self.marked_sqrs += 1
+
+    def emptySquare(self, row, col):
+        return self.squares[row][col] == 0
+
+    def getEmptySquares(self): # Returns a list of all unmarked squares
+        unmarked = []
+        for row in range(ROWS):
+            for col in range(COLS):
+                if (self.emptySquare(row, col)):
+                    unmarked.append( (row, col) )
+        return unmarked
+
+    def isFull(self):
+        return self.marked_sqrs == 9
+
+    def isEmpty(self):
+        return self.marked_sqrs == 0
 
 class Game:
     def __init__(self):
@@ -57,7 +133,7 @@ class Game:
             self.gameMode = 'pvp'
 
     def isOver(self): # true if game is over: win/tie
-        return self.board.finalState() != 0 or self.board.isFull()
+        return self.board.finalState(show=True) != 0 or self.board.isFull()
 
     def reset(self):
         self.__init__() # restart all attributes to default
