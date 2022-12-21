@@ -30,6 +30,27 @@ def main():
                     game.make_move(row, col)
                     # print(board.squares) # DEBUG: print before AI makes decision
 
+            if event.type == pygame.KEYDOWN:
+                # g key: change game mode: AI or 2 player human version (can happen mid-game)
+                if event.key == pygame.K_g:
+                    game.change_gamemode()
+
+                # 0 key: change to Random AI logic
+                if event.key == pygame.K_0:
+                    ai.level = 0
+
+                # 1 key: change to WTF AI logic
+                if event.key == pygame.K_1:
+                    ai.level = 1
+
+                # r key: reset game
+                if event.key == pygame.K_r:
+                    game.reset()
+                    board = game.board
+                    ai = game.ai
+
+                # TODO: add a keyboard toggle for console output and/or high scores / game timer, etc
+
         if game.gameMode == 'ai' and game.player == ai.player:
             # Update the screen
             pygame.display.update()

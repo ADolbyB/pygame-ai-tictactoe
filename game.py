@@ -4,7 +4,6 @@ from board import Board
 from ai import AI
 
 screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
-screen.fill( BG_COLOR ) # Background Color
 
 class Game:
     def __init__(self):
@@ -21,6 +20,7 @@ class Game:
         self.next_turn()
 
     def show_lines(self):
+        screen.fill( BG_COLOR ) # Background Color ## FIX for game reset not refreshing
         # Vertical lines
         pygame.draw.line(screen, LINE_COLOR, (SQSIZE, 0), (SQSIZE, HEIGHT), LINE_WIDTH)
         pygame.draw.line(screen, LINE_COLOR, (WIDTH - SQSIZE, 0), (WIDTH - SQSIZE, HEIGHT), LINE_WIDTH)
@@ -49,3 +49,12 @@ class Game:
 
     def next_turn(self):
         self.player = self.player % 2 + 1 # Player 1: 1 % 2 = 1 + 1 = 2, or Player 2: 2 % 2 = 0 + 1 = 2
+
+    def change_gamemode(self):
+        if self.gameMode == 'pvp':
+            self.gameMode = 'ai'
+        else:
+            self.gameMode = 'pvp'
+
+    def reset(self):
+        self.__init__() # restart all attributes to default
