@@ -20,15 +20,6 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = event.pos
-                row = pos[1] // SQSIZE
-                col = pos[0] // SQSIZE
-
-                if (board.emptySquare(row, col)):
-                    game.make_move(row, col)
-                    # print(board.squares) # DEBUG: print before AI makes decision
 
             if event.type == pygame.KEYDOWN:
                 # g key: change game mode: AI or 2 player human version (can happen mid-game)
@@ -50,8 +41,21 @@ def main():
                     ai = game.ai
 
                 # TODO: add a keyboard toggle for console output and/or high scores / game timer, etc
+        
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = event.pos
+                row = pos[1] // SQSIZE
+                col = pos[0] // SQSIZE
 
-        if game.gameMode == 'ai' and game.player == ai.player:
+                if (board.emptySquare(row, col)) and game.running:
+                    game.make_move(row, col)
+                    # print(board.squares) # DEBUG: print before AI makes decision
+
+                    if game.isOver():
+                        game.running = False
+
+
+        if game.gameMode == 'ai' and game.player == ai.player and game.running:
             # Update the screen
             pygame.display.update()
 

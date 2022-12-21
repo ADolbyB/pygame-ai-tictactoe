@@ -56,5 +56,8 @@ class Game:
         else:
             self.gameMode = 'pvp'
 
+    def isOver(self): # true if game is over: win/tie
+        return self.board.finalState() != 0 or self.board.isFull()
+
     def reset(self):
         self.__init__() # restart all attributes to default
