@@ -8,7 +8,7 @@ from constants import *
 
 # PyGame Setup:
 pygame.init()
-pygame.display.set_caption("WTF AI Tic Tac Toe") # Caption at top of window
+pygame.display.set_caption("AI Tic Tac Toe Game") # Caption at top of window
 screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
 
 class Board:
@@ -249,7 +249,7 @@ def main():
                     ai.level = 0
                     print('Random AI Opponent Selected')
 
-                # 1 key: change to WTF AI logic
+                # 1 key: change to Minimaxs AI logic
                 if event.key == pygame.K_1:
                     ai.level = 1
                     print('Smart AI Opponent Selected')

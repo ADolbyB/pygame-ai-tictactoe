@@ -1,6 +1,6 @@
 # Window Size:
-WIDTH = 1200
-HEIGHT = 1200
+WIDTH = 800
+HEIGHT = 800
 
 # Board Parameters:
 ROWS = 3
