@@ -1,0 +1,181 @@
+name: Build & Release Pygame Checkers
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # JOB 1: Build Windows executable
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'  # Use a recent stable Python version
+      
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygame==2.5.2 pyinstaller numpy
+      
+      # Step 4: Build Windows executable with PyInstaller
+      - name: Build Windows executable
+        run: pyinstaller tictactoe-win.spec
+      
+      # Step 5: Create Windows distribution package
+      - name: Package Windows distribution
+        run: |
+          mkdir tictactoe-win
+          copy dist\tictactoe-win.exe tictactoe-win\
+          # Copy necessary assets if they're not bundled
+          if (Test-Path assets) { xcopy assets tictactoe-win\assets\ /E /I }
+          if (Test-Path README.md) { copy README.md tictactoe-win\ }
+          
+          # Create ZIP archive
+          Compress-Archive -Path tictactoe-win\* -DestinationPath tictactoe-win-x64.zip
+      
+      # Step 6: Upload Windows build as artifact
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: tictactoe-win-x64.zip
+          retention-days: 1
+
+  # JOB 2: Build Linux executable
+  build-linux:
+    runs-on: ubuntu-22.04   # Add older compatibility
+    
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      # Step 3: Install system dependencies for Pygame
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-dev libsdl2-dev libsdl2-image-dev \
+            libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev \
+            libportmidi-dev libjpeg-dev
+      
+      # Step 4: Install Python dependencies
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygame==2.5.2 pyinstaller numpy
+      
+      # Step 5: Build Linux executable with PyInstaller
+      - name: Build Linux executable
+        run: pyinstaller tictactoe-linux.spec
+        continue-on-error: false  # Make sure we see errors
+      
+      # Step 6: Verify executable is built
+      - name: Verify build
+        run: |
+          echo "=== Checking dist folder ==="
+          ls -la dist/
+          if [ ! -f "dist/tictactoe-game" ]; then
+            echo "ERROR: Executable not found!"
+            exit 1
+          fi
+      
+      # Step 7: Create Linux distribution package
+      - name: Package Linux distribution
+        run: |
+          mkdir -p tictactoe-linux
+          cp dist/tictactoe-game tictactoe-linux/
+          chmod +x tictactoe-linux/tictactoe-game
+          
+          # Copy assets if they're not bundled
+          if [ -d "assets" ]; then
+            cp -r assets tictactoe-linux/
+          fi
+          if [ -f "README.md" ]; then
+            cp README.md tictactoe-linux/
+          fi
+          
+          # Create installation script
+          cat > tictactoe-linux/run.sh << 'END'
+          #!/bin/bash
+          # AI Minimax Tic Tac Toe Game Launcher
+          cd "$(dirname "$0")"
+          ./tictactoe-game
+          END
+          
+          # Make script executable
+          chmod +x tictactoe-linux/run.sh
+          
+          # Create tarball
+          tar -czf tictactoe-linux-x64.tar.gz tictactoe-linux/
+      
+      # Step 8: Upload Linux build as artifact
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: tictactoe-linux-x64.tar.gz
+          retention-days: 1
+
+  # JOB 3: Create GitHub Release with all builds
+  create-release:
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Check out repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Download all build artifacts
+      - name: Download Windows build
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+          path: builds
+      
+      - name: Download Linux build
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-build
+          path: builds
+      
+      # Step 3: List downloaded files for verification
+      - name: List build files
+        run: |
+          echo "=== Build artifacts ==="
+          ls -lh builds/
+      
+      # Step 4: Prep release notes
+      - name: Prepare release notes
+        run: |
+          sed 's/{VERSION}/${{ github.ref_name }}/g' .github/release-notes.md > release-body.md
+
+      # Step 5: Create the GitHub release
+      - name: Create Release & Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-body.md 
+          files: |
+            builds/tictactoe-win-x64.zip
+            builds/tictactoe-linux-x64.tar.gz
+          fail_on_unmatched_files: true
