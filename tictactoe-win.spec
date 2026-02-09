@@ -4,7 +4,7 @@ a = Analysis(
     ['tictactoe.py'],
     pathex=['.'],
     binaries=[],
-    datas=[('constants')],
+    datas=[],
     hiddenimports=[
         'constants',
     ],
