@@ -23,7 +23,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='TicTacToe-Game',
+    name='tictactoe-game',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
