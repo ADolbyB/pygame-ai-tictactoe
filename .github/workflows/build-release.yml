@@ -39,7 +39,7 @@ jobs:
       - name: Package Windows distribution
         run: |
           mkdir tictactoe-win
-          copy dist\tictactoe-win.exe tictactoe-win\
+          copy dist\tictactoe-game.exe tictactoe-win\
           # Copy necessary assets if they're not bundled
           if (Test-Path assets) { xcopy assets tictactoe-win\assets\ /E /I }
           if (Test-Path README.md) { copy README.md tictactoe-win\ }
