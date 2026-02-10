@@ -13,15 +13,13 @@
 [![Forks](https://img.shields.io/github/forks/ADolbyB/pygame-ai-tictactoe?style=for-the-badge&logo=github)](https://github.com/ADolbyB/pygame-ai-checkers/network/members)
 [![GitHub repo size](https://img.shields.io/github/repo-size/ADolbyB/pygame-ai-tictactoe?label=Repo%20Size&logo=Github&style=for-the-badge)](https://github.com/ADolbyB/pygame-ai-tictactoe)
 
-[Overview](#-overview) • 
-[Features](#-features) • 
-[Screenshots](#-screenshots)
-[How to Play](#-how-to-play) • 
-[Installation](#-installation) • 
-[Project Structure](#-project-structure) • 
+[Overview](#-overview) •
+[Features](#-features) •
+[Screenshots](#-screenshots) •
+[How to Play](#-how-to-play) •
+[Installation](#-installation) •
+[Project Structure](#-project-structure) •
 [Algorithm](#-algorithm)
-
-
 
 </div>
 
